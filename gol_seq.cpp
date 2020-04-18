@@ -18,7 +18,6 @@ public:
   void step() {
     vector<vector<bool>> tmp(n_rows, vector<bool>(n_cols));
     std::copy(matrix.begin(), matrix.end(), tmp.begin());
-    auto begin = high_resolution_clock::now();
     for (size_t i = 1; i < n_rows-1; i++) {
       for (size_t j = 1; j < n_cols-1; j++) {
         int neighbours_alive = 0;
@@ -48,9 +47,6 @@ public:
         }
       }
     }
-    auto end = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(end - begin);
-    cout<<"Step execution time: "<<duration.count()<<" usec"<<endl;
     matrix = tmp;
     tmp.clear();
   }
@@ -69,14 +65,13 @@ int main(int argc, char* argv[]) {
 
   GameOfLifeSeq* gol = new GameOfLifeSeq(rows, cols);
   gol->toString();
+
   auto begin = high_resolution_clock::now();
-  for (size_t i = 0; i < iters; i++) {
-    cout<<"Step "<<i+1<<endl;
-    gol->step();
-    gol->toString();
-  }
+  for (size_t i = 0; i < iters; i++) gol->step();
   auto end = high_resolution_clock::now();
   auto duration = duration_cast<microseconds>(end - begin);
+
+  gol->toString();
   cout<<"Total execution time: "<<duration.count()<<" usec"<<endl;
 
   return 0;

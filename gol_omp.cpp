@@ -51,16 +51,13 @@ public:
   void step() {
     vector<vector<bool>> tmp(n_rows, vector<bool>(n_cols));
     std::copy(matrix.begin(), matrix.end(), tmp.begin());
-    double start = omp_get_wtime();
-    size_t i, j = 0;//collapse(2) shared(tmp, matrix)
+    size_t i, j = 0;
     #pragma omp parallel for num_threads(nw) collapse(2) private(i, j) shared(tmp, matrix)
     for (i = 1; i < n_rows-1; i++) {
       for (j = 1; j < n_cols-1; j++) {
         tmp[i][j] = check_cell(i, j);
       }
     }
-    double duration = omp_get_wtime() - start;
-    cout<<"Step execution time: "<<duration*1000000<<" usec"<<endl;
     matrix = tmp;
     tmp.clear();
   }
@@ -83,13 +80,12 @@ int main(int argc, char* argv[]) {
 
   GameOfLifeOmp* gol = new GameOfLifeOmp(rows, cols, nw);
   gol->toString();
+
   double begin = omp_get_wtime();
-  for (size_t i = 0; i < iters; i++) {
-    cout<<"Step "<<i+1<<endl;
-    gol->step();
-    gol->toString();
-  }
+  for (size_t i = 0; i < iters; i++) gol->step();
   double duration = omp_get_wtime() - begin;
+
+  gol->toString();
   cout<<"Total execution time: "<<duration*1000000<<" usec"<<endl;
 
   return 0;

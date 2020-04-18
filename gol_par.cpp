@@ -29,7 +29,6 @@ public:
     std::copy(matrix.begin(), matrix.end(), tmp.begin());
     int chunk_size = (n_rows-2) / nw;
     int rest = (n_rows-2) % nw;
-    auto begin = high_resolution_clock::now();
     for (int k = 1; k < n_rows-2; k += chunk_size) {
       workers.push_back(thread([&](vector<vector<bool>> M, int idx) {
         int chunk_idx = idx + chunk_size - 1;
@@ -78,9 +77,6 @@ public:
     }
 
     for (thread &t : workers) t.join();
-    auto end = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(end - begin);
-    cout<<"Step execution time: "<<duration.count()<<" usec"<<endl;
     matrix = tmp;
     tmp.clear();
     workers.clear();
@@ -101,17 +97,16 @@ int main(int argc, char* argv[]) {
       <<(rows * cols)<<" cells, "
       <<iters<<" iterations, "
       <<nw<<" workers."<<endl;
-  
+
   GameOfLifePar* gol = new GameOfLifePar(rows, cols, nw);
   gol->toString();
+
   auto begin = high_resolution_clock::now();
-  for (size_t i = 0; i < iters; i++) {
-    cout<<"Step "<<i+1<<endl;
-    gol->step();
-    gol->toString();
-  }
+  for (size_t i = 0; i < iters; i++) gol->step();
   auto end = high_resolution_clock::now();
   auto duration = duration_cast<microseconds>(end - begin);
+
+  gol->toString();
   cout<<"Total execution time: "<<duration.count()<<" usec"<<endl;
 
   return 0;
