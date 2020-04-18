@@ -52,7 +52,7 @@ public:
     vector<vector<bool>> tmp(n_rows, vector<bool>(n_cols));
     std::copy(matrix.begin(), matrix.end(), tmp.begin());
     size_t i, j = 0;
-    #pragma omp parallel for num_threads(nw) collapse(2) private(i, j) shared(tmp, matrix)
+    #pragma omp parallel for num_threads(nw) collapse(2) private(i, j)
     for (i = 1; i < n_rows-1; i++) {
       for (j = 1; j < n_cols-1; j++) {
         tmp[i][j] = check_cell(i, j);
