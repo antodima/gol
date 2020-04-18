@@ -1,1 +1,4 @@
 *.txt
+gol_seq
+gol_par
+gol_omp
