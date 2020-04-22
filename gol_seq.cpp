@@ -4,7 +4,7 @@
 #include <vector>
 #include <ctime>
 #include <chrono>
-#include "gol.h"
+#include "gol.hpp"
 
 using namespace std;
 using namespace std::chrono;

@@ -1,13 +1,17 @@
-CXX = /usr/bin/g++
-CXXFLAGS = -std=c++14
+CXX = g++ -std=c++17
+CXXFLAGS = -g # -DNO_DEFAULT_MAPPING -DBLOCKING_MODE -DFF_BOUNDED_BUFFER
 LDFLAGS = -fopenmp -O3
-
-OBJS = gol_seq gol_par gol_omp
-SRCS = gol_seq.cpp gol_par.cpp gol_omp.cpp
+TARGETS = gol_seq gol_par gol_omp
 OUTS = output_seq.txt output_par.txt output_omp.txt
 
-clean:
-	rm -f $(OBJS)
+.PHONY: all clean cleanall
+.SUFFIXES: .cpp
 
-cleanall:
-	rm -f $(OBJS) $(OUTS)
+%: %.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+all : $(TARGETS)
+clean :
+	rm -f $(TARGETS)
+cleanall : clean
+	\rm -f *.o *~ *.txt

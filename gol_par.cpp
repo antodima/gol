@@ -6,7 +6,7 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
-#include "gol.h"
+#include "gol.hpp"
 
 using namespace std;
 using namespace std::chrono;

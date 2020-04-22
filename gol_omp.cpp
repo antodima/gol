@@ -4,7 +4,7 @@
 #include <chrono>
 #include <thread>
 #include <omp.h>
-#include "gol.h"
+#include "gol.hpp"
 
 using namespace std;
 
