@@ -14,35 +14,6 @@ class GameOfLifeOmp : public virtual GameOfLife {
 private:
   int nw = 1;
 
-  bool check_cell(int i, int j) {
-    int neighbours_alive = 0;
-    if (matrix[i][j])     neighbours_alive++;
-    if (matrix[i][j-1])   neighbours_alive++;
-    if (matrix[i][j+1])   neighbours_alive++;
-    if (matrix[i-1][j])   neighbours_alive++;
-    if (matrix[i+1][j])   neighbours_alive++;
-    if (matrix[i+1][j-1]) neighbours_alive++;
-    if (matrix[i+1][j+1]) neighbours_alive++;
-    if (matrix[i-1][j+1]) neighbours_alive++;
-    // an individual in a cell with 2 or 3 alive neighbours stays alive
-    if (matrix[i][j] && (neighbours_alive == 2 || neighbours_alive == 3)) {
-      return(true);
-    }
-    // an empty cell with exactly 3 alive neighbours becomes populated by a new individual
-    else if (neighbours_alive == 3 && !matrix[i][j]) {
-      return(true);
-    }
-    // an alive cell with less than 2 alive neighbours dies (becomes empty)
-    else if (matrix[i][j] && neighbours_alive < 2) {
-      return(false);
-    }
-    // an alive cell with more than 3 alive neighbours dies (become empty)
-    else if (matrix[i][j] && neighbours_alive > 3) {
-      return(false);
-    }
-    return(matrix[i][j]);
-  }
-
 public:
   GameOfLifeOmp(int rows, int cols, int workers) : GameOfLife(rows, cols) {
     nw = workers;
@@ -52,10 +23,14 @@ public:
     vector<vector<bool>> tmp(n_rows, vector<bool>(n_cols));
     std::copy(matrix.begin(), matrix.end(), tmp.begin());
     size_t i, j = 0;
-    #pragma omp parallel for num_threads(nw) collapse(2) private(i, j)
+    #pragma omp parallel for num_threads(nw) private(i, j)
     for (i = 1; i < n_rows-1; i++) {
+      #pragma omp simd
       for (j = 1; j < n_cols-1; j++) {
-        tmp[i][j] = check_cell(i, j);
+        int neighbours_alive = matrix[i-1][j-1] + matrix[i-1][j] + matrix[i-1][j+1] +
+                               matrix[i][j-1]                    + matrix[i][j+1] +
+                               matrix[i+1][j-1] + matrix[i+1][j] + matrix[i+1][j+1];
+        tmp[i][j] = (neighbours_alive==3) || (neighbours_alive==2 && matrix[i][j]==1);
       }
     }
     matrix = tmp;

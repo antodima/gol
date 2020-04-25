@@ -1,6 +1,6 @@
 CXX = g++ -std=c++17
 CXXFLAGS = -g # -DNO_DEFAULT_MAPPING -DBLOCKING_MODE -DFF_BOUNDED_BUFFER
-LDFLAGS = -fopenmp -O3
+LDFLAGS = -fopenmp -O3 -ftree-vectorize -fopt-info-vec # -fopt-info-vec-missed
 TARGETS = gol_seq gol_par gol_omp
 OUTS = output_seq.txt output_par.txt output_omp.txt
 
