@@ -17,7 +17,6 @@ class GameOfLifePar : public virtual GameOfLife {
 
 private:
   int nw = 1;
-  mutex mtx;
 
 public:
   GameOfLifePar(int rows, int cols, int workers) : GameOfLife(rows, cols) {
@@ -45,7 +44,7 @@ public:
           #pragma GCC ivdep
           for (size_t j = 1; j < n_cols-1; j++) {
             int neighbours_alive = M[i-1][j-1] + M[i-1][j] + M[i-1][j+1] +
-	                                 M[i][j-1]               + M[i][j+1] +
+	                                 M[i  ][j-1]             + M[i  ][j+1] +
 	                                 M[i+1][j-1] + M[i+1][j] + M[i+1][j+1];
             tmp[i][j] = (neighbours_alive==3) || (neighbours_alive==2 && M[i][j]==1);
           }
